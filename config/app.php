@@ -6,5 +6,6 @@ return [
     // app.warehouseCode
     // 'warehouseCode' => ['a', 'b'],
     'warehouseCode' => $envVal ? explode(',', $envVal) : [],
-    "job_hash_key"=>"jobKeyHash"
+    "job_hash_key"=>"jobKeyHash",
+    "redis_fds"=>"fds"
 ];

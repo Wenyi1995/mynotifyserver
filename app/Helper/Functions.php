@@ -8,7 +8,12 @@
  * @license  https://github.com/swoft-cloud/swoft/blob/master/LICENSE
  */
 
-function user_func(): string
+function getJobStatus($job_name): string
 {
-    return 'hello';
+    return \Swoft\Redis\Redis::hGet(config('app.job_hash_key'), $job_name);
+}
+
+function getAllJobStatus(): array
+{
+    return \Swoft\Redis\Redis::hGetAll(config('app.job_hash_key'));
 }

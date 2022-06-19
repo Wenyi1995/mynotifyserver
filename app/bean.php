@@ -128,7 +128,7 @@ return [
     /** @see \Swoft\WebSocket\Server\WsMessageDispatcher */
     'wsMsgDispatcher'    => [
         'middlewares' => [
-            \App\WebSocket\Middleware\GlobalWsMiddleware::class
+//            \App\WebSocket\Middleware\GlobalWsMiddleware::class
         ],
     ],
     /** @see \Swoft\Tcp\Server\TcpServer */
