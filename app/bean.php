@@ -102,6 +102,9 @@ return [
             'rpc' => bean('rpcServer'),
             // 'tcp' => bean('tcpServer'),
         ],
+        'process'=>[
+            'redid_publish'=>bean(\App\Process\RedisPublishProcess::class)
+        ],
         'on'       => [
             // Enable http handle
             SwooleEvent::REQUEST => bean(RequestListener::class),

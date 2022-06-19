@@ -52,11 +52,11 @@ class HomeController
         $server = $request->post('server');
         $jobKey = $server . '-' . $jobKey;
         $isHasKey = Redis::hGet(config('app.job_hash_key'), $jobKey);
-        if($isHasKey == "create") {
+        if ($isHasKey == "create") {
 
             return $response->withData(['code' => 400, 'status' => false, 'msg' => 'this key has created!']);
 
-        }else{
+        } else {
 
             Redis::hSet(config('app.job_hash_key'), $jobKey, "create");
 
@@ -78,8 +78,10 @@ class HomeController
         $jobKey = $request->post('job_key');
         $server = $request->post('server');
 
-        Redis::hSet(config('app.job_hash_key'), $server . '-' . $jobKey, "done");
+        $key = $server . '-' . $jobKey;
+        Redis::hSet(config('app.job_hash_key'), $key, "done");
 
+        Redis::publish(config('app.done_chan'), $key);
         return $response->withData(['code' => 200, 'status' => true, 'msg' => 'success']);
     }
 
