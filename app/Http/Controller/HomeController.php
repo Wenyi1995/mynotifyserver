@@ -10,7 +10,6 @@
 
 namespace App\Http\Controller;
 
-use App\Model\Data\GoodsData;
 use Swoft;
 use Swoft\Http\Message\ContentType;
 use Swoft\Http\Message\Response;
@@ -20,6 +19,8 @@ use Swoft\View\Renderer;
 use Throwable;
 use function bean;
 use function context;
+use Swoft\Redis\Redis;
+
 
 /**
  * Class HomeController
@@ -28,58 +29,58 @@ use function context;
 class HomeController
 {
     /**
+     * 创建监听
      * @RequestMapping("/")
      * @throws Throwable
      */
     public function index(): Response
     {
-        /** @var Renderer $renderer */
-        $renderer = Swoft::getBean('view');
-        $content  = $renderer->render('home/index');
-
-        return context()->getResponse()->withContentType(ContentType::HTML)->withContent($content);
+        return context()->getResponse()->withData(['code' => 200]);
     }
 
     /**
-     * @RequestMapping("/hi")
-     *
-     * @return Response
-     */
-    public function hi(): Response
-    {
-        return context()->getResponse()->withContent('hi');
-    }
-
-    /**
-     * @RequestMapping("/hello[/{name}]")
-     * @param string $name
-     *
-     * @return Response
-     */
-    public function hello(string $name): Response
-    {
-        return context()->getResponse()->withContent('Hello' . ($name === '' ? '' : ", {$name}"));
-    }
-
-    /**
-     * @RequestMapping("/wstest", method={"GET"})
-     *
-     * @return Response
+     * 创建监听
+     * @RequestMapping("/create")
      * @throws Throwable
      */
-    public function wsTest(): Response
+    public function create(): Response
     {
-        return view('home/ws-test');
+        $request = context()->getRequest();
+        $response = context()->getResponse();
+
+        $jobKey = $request->post('job_key');
+        $server = $request->post('server');
+        $jobKey = $server . '-' . $jobKey;
+        $isHasKey = Redis::hGet(config('app.job_hash_key'), $jobKey);
+        if($isHasKey == "create") {
+
+            return $response->withData(['code' => 400, 'status' => false, 'msg' => 'this key has created!']);
+
+        }else{
+
+            Redis::hSet(config('app.job_hash_key'), $jobKey, "create");
+
+            return $response->withData(['code' => 200, 'status' => true, 'msg' => 'success']);
+
+        }
     }
 
     /**
-     * @RequestMapping("/dataConfig", method={"GET"})
-     *
-     * @return array
+     * 创建监听
+     * @RequestMapping("/done")
      * @throws Throwable
      */
-    public function dataConfig(): array
+    public function done(): Response
     {
-        return bean(GoodsData::class)->getConfig();
+        $request = context()->getRequest();
+        $response = context()->getResponse();
+
+        $jobKey = $request->post('job_key');
+        $server = $request->post('server');
+
+        Redis::hSet(config('app.job_hash_key'), $server . '-' . $jobKey, "done");
+
+        return $response->withData(['code' => 200, 'status' => true, 'msg' => 'success']);
     }
+
 }

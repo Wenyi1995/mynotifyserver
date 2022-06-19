@@ -35,7 +35,7 @@ return [
     ],
     'httpServer'         => [
         'class'    => HttpServer::class,
-        'port'     => 18306,
+        'port'     => env("HTTP_PORT",18306),
         'listener' => [
             // 'rpc' => bean('rpcServer'),
             // 'tcp' => bean('tcpServer'),
@@ -51,9 +51,9 @@ return [
         ],
         /* @see HttpServer::$setting */
         'setting'  => [
-            'task_worker_num'       => 12,
+            'task_worker_num'       => 2,
             'task_enable_coroutine' => true,
-            'worker_num'            => 6,
+            'worker_num'            => 1,
             // static handle
             // 'enable_static_handler'    => true,
             // 'document_root'            => dirname(__DIR__) . '/public',
@@ -74,71 +74,30 @@ return [
     ],
     'db'                 => [
         'class'    => Database::class,
-        'dsn'      => 'mysql:dbname=test;host=127.0.0.1',
+        'dsn'      => 'mysql:dbname=test;host=public-mysql',
         'username' => 'root',
         'password' => 'swoft123456',
         'charset'  => 'utf8mb4',
     ],
-    'db2'                => [
-        'class'    => Database::class,
-        'dsn'      => 'mysql:dbname=test2;host=127.0.0.1',
-        'username' => 'root',
-        'password' => 'swoft123456',
-        'charset'  => 'utf8mb4',
-        //        'dbSelector' => bean(DbSelector::class)
-    ],
-    'db2.pool'           => [
+    'db.pool'           => [
         'class'    => Pool::class,
-        'database' => bean('db2'),
-    ],
-    'db3'                => [
-        'class'    => Database::class,
-        'dsn'      => 'mysql:dbname=test2;host=127.0.0.1',
-        'username' => 'root',
-        'password' => 'swoft123456',
-        'charset'  => 'utf8mb4',
-    ],
-    'db3.pool'           => [
-        'class'    => Pool::class,
-        'database' => bean('db3')
+        'database' => bean('db'),
     ],
     'migrationManager'   => [
         'migrationPath' => '@database/Migration',
     ],
     'redis'              => [
         'class'    => RedisDb::class,
-        'host'     => '127.0.0.1',
+        'host'     => 'public-redis',
         'port'     => 6379,
         'database' => 0,
         'option'   => [
             'prefix' => 'swoft:'
         ]
     ],
-    'user'               => [
-        'class'   => ServiceClient::class,
-        'host'    => '127.0.0.1',
-        'port'    => 18307,
-        'setting' => [
-            'timeout'         => 0.5,
-            'connect_timeout' => 1.0,
-            'write_timeout'   => 10.0,
-            'read_timeout'    => 0.5,
-        ],
-        'packet'  => bean('rpcClientPacket')
-    ],
-    'user.pool'          => [
-        'class'  => ServicePool::class,
-        'client' => bean('user'),
-    ],
-    'rpcServer'          => [
-        'class' => ServiceServer::class,
-        'listener' => [
-            'http' => bean('httpServer'),
-        ]
-    ],
     'wsServer'           => [
         'class'    => WebSocketServer::class,
-        'port'     => 18308,
+        'port'     => env("WS_PORT",18308),
         'listener' => [
             'rpc' => bean('rpcServer'),
             // 'tcp' => bean('tcpServer'),
@@ -150,13 +109,12 @@ return [
             SwooleEvent::TASK    => bean(TaskListener::class),
             SwooleEvent::FINISH  => bean(FinishListener::class)
         ],
-        'debug'    => 1,
-        // 'debug'   => env('SWOFT_DEBUG', 0),
+         'debug'   => env('SWOFT_DEBUG', 0),
         /* @see WebSocketServer::$setting */
         'setting'  => [
-            'task_worker_num'       => 6,
+            'task_worker_num'       => 4,
             'task_enable_coroutine' => true,
-            'worker_num'            => 6,
+            'worker_num'            => 2,
             'log_file'              => alias('@runtime/swoole.log'),
             // 'open_websocket_close_frame' => true,
         ],
