@@ -103,7 +103,8 @@ return [
             // 'tcp' => bean('tcpServer'),
         ],
         'process'=>[
-            'redid_publish'=>bean(\App\Process\RedisPublishProcess::class)
+            'redid_publish'=>bean(\App\Process\RedisPublishProcess::class),
+            'redid_clear'=>bean(\App\Process\RedisKeysDelProcess::class)
         ],
         'on'       => [
             // Enable http handle

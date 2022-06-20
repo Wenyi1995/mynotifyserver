@@ -80,6 +80,7 @@ class HomeController
 
         $key = $server . '-' . $jobKey;
         Redis::hSet(config('app.job_hash_key'), $key, "done");
+        Redis::hSet(config('app.job_done_hash_key'), $key, (string)time());
 
         Redis::publish(config('app.done_chan'), $key);
         return $response->withData(['code' => 200, 'status' => true, 'msg' => 'success']);

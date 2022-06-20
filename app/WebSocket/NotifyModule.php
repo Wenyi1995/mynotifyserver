@@ -30,7 +30,6 @@ class NotifyModule
      */
     public function onOpen(Request $request, int $fd): void
     {
-        Redis::sAdd(config('app.redis_fds'), (string)$fd);
         Session::current()->push(json_encode(getAllJobStatus()));
     }
 
@@ -43,6 +42,6 @@ class NotifyModule
      */
     public function onClose(Server $server, int $fd): void
     {
-        Redis::sRem(config('app.redis_fds'), (string)$fd);
+//        Redis::sRem(config('app.redis_fds'), (string)$fd);
     }
 }
