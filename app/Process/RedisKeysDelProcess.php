@@ -31,7 +31,7 @@ class RedisKeysDelProcess extends UserProcess
     {
         while (true) {
             $time = time();
-            $doneKeys = Redis::hSetAll(config('app.job_done_hash_key'));
+            $doneKeys = Redis::hGetAll(config('app.job_done_hash_key'));
             foreach ($doneKeys as $key => $t) {
                 if (($time - $t) >= 1800) {
                     Redis::hDel(config('app.job_hash_key'), $key);
