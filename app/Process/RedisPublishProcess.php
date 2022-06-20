@@ -8,6 +8,7 @@ use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Db\Exception\DbException;
 use Swoft\Process\Process;
 use Swoft\Process\UserProcess;
+use Swoft\Redis\Redis;
 
 /**
  * Class MonitorProcess
@@ -18,12 +19,6 @@ use Swoft\Process\UserProcess;
  */
 class RedisPublishProcess extends UserProcess
 {
-    /**
-     * @Inject()
-     *
-     * @var PublishLogic
-     */
-    private $logic;
 
     /**
      * @param Process $process
@@ -32,6 +27,12 @@ class RedisPublishProcess extends UserProcess
      */
     public function run(Process $process): void
     {
-        $this->logic->doSend($process);
+        ini_set('default_socket_timeout', '-1');
+        while (true) {
+            Redis::subscribe([config('app.done_chan')], function ($redis, $chan, $key) {
+                \Swoft::server()->sendToAll(json_encode([$key => 'done']));
+            });
+
+        }
     }
 }

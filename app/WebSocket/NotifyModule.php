@@ -16,7 +16,7 @@ use Swoole\WebSocket\Server;
  *
  * @WsModule(
  *     "/notify",
- *     defaultCommand="notice.index",
+ *     defaultCommand="notify.index",
  *     messageParser=JsonParser::class,
  *     controllers={NotifyController::class}
  * )

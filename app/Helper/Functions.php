@@ -18,13 +18,3 @@ function getAllJobStatus(): array
     return \Swoft\Redis\Redis::hGetAll(config('app.job_hash_key'));
 }
 
-function sendMsgToAll($msg): bool
-{
-    $fds = \Swoft\Redis\Redis::sMembers(config('app.redis_fds'));
-    if ($fds) {
-        foreach ($fds as $fd) {
-            \Swoft::server()->sendTo((int)$fd, $msg);
-        }
-    }
-    return true;
-}
