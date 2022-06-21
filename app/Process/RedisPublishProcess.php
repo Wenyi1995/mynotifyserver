@@ -29,8 +29,8 @@ class RedisPublishProcess extends UserProcess
     {
         ini_set('default_socket_timeout', '-1');
         while (true) {
-            Redis::subscribe([config('app.done_chan')], function ($redis, $chan, $key) {
-                \Swoft::server()->sendToAll(getReturn("show",[$key => 'done'],true));
+            Redis::subscribe([config('app.done_chan')], function ($redis, $chan, $data) {
+                \Swoft::server()->sendToAll(getReturn("show",$data,true));
             });
 
         }

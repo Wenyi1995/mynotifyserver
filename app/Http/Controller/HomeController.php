@@ -77,12 +77,13 @@ class HomeController
 
         $jobKey = $request->post('job_key');
         $server = $request->post('server');
+        $status = $request->post('status');
 
         $key = $server . '-' . $jobKey;
-        Redis::hSet(config('app.job_hash_key'), $key, "done");
+        Redis::hSet(config('app.job_hash_key'), $key, $status);
         Redis::hSet(config('app.job_done_hash_key'), $key, (string)time());
 
-        Redis::publish(config('app.done_chan'), $key);
+        Redis::publish(config('app.done_chan'), serialize([$key => $status]));
         return $response->withData(['code' => 200, 'status' => true, 'msg' => 'success']);
     }
 
