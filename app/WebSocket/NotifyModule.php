@@ -30,7 +30,7 @@ class NotifyModule
      */
     public function onOpen(Request $request, int $fd): void
     {
-        Session::current()->push(json_encode(getAllJobStatus()));
+        Session::current()->push(getReturn('show',getAllJobStatus()));
     }
 
 

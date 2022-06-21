@@ -2,6 +2,7 @@
 
 namespace App\WebSocket\Notify;
 
+use Swoft\Log\Helper\CLog;
 use Swoft\Session\Session;
 use Swoft\WebSocket\Server\Annotation\Mapping\MessageMapping;
 use Swoft\WebSocket\Server\Annotation\Mapping\WsController;
@@ -32,7 +33,17 @@ class NotifyController
             $info = getAllJobStatus();
         }
 
-        Session::current()->push(json_encode($info));
+        Session::current()->push(getReturn('show',$info));
+    }
+
+    /**
+     *
+     * @return void
+     * @MessageMapping("ping")
+     */
+    public function ping(): void
+    {
+        Session::current()->push(getReturn('pong',''),WEBSOCKET_OPCODE_PONG);
     }
 
 }

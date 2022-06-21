@@ -18,3 +18,14 @@ function getAllJobStatus(): array
     return \Swoft\Redis\Redis::hGetAll(config('app.job_hash_key'));
 }
 
+/**
+ * 获取返回json
+ * @param $method
+ * @param $data
+ * @param $is_push
+ * @return false|string
+ */
+function getReturn($method, $data, $is_push = false)
+{
+    return json_encode(['method' => $method, 'data' => $data, 'is_push' => $is_push]);
+}
